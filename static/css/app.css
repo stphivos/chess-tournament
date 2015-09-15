@@ -1,0 +1,316 @@
+/* Reset */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+}
+
+/* Structure */
+#page {
+    text-align: center;
+    padding-bottom: 60px;
+}
+
+#page #title {
+}
+
+#page .navbar.space {
+    margin: 0;
+}
+
+#page #outer-content {
+    position: relative;
+}
+
+#page #content {
+}
+
+#page #footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+}
+
+#page #footer .middle {
+    text-align: center;
+}
+
+#page #footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#page #footer li {
+    display: inline;
+    margin: 0 3px;
+    list-style-type: none;
+    font-size: 11px;
+}
+
+#app-progress.progress {
+    position: fixed;
+    margin: 0;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 15px;
+    border-radius: 0;
+}
+
+#app-progress .progress-bar {
+    width: 100%;
+    font-size: .7em;
+    line-height: inherit;
+}
+
+/* Common */
+.middle {
+    width: 80%;
+    margin: 0 auto;
+    text-align: left;
+    padding: 0 15px;
+}
+
+.xs .middle, .sm .middle {
+    width: 100%;
+}
+
+.clear {
+    clear: both;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.ver.lst {
+    margin-bottom: 0;
+}
+
+.ver.fst {
+    margin-top: 0;
+}
+
+.ver.nxt {
+    margin-bottom: 14px;
+}
+
+.ver.prv {
+    margin-top: 14px;
+}
+
+.hor.lst {
+    margin-right: 0;
+}
+
+.hor.fst {
+    margin-left: 0;
+}
+
+.tooltip {
+    text-transform: none;
+    line-height: inherit;
+}
+
+/* Index */
+#index .actions {
+    position: fixed;
+    left: 0;
+}
+
+#index .actions .btn {
+    border-radius: 0;
+    display: block;
+    width: 130px;
+}
+
+#index .section-container {
+    position: relative;
+    overflow: hidden;
+    height: 600px;
+}
+
+#index .section-container .section, .section-container .panel {
+    height: inherit;
+}
+
+#index .section.ng-enter, .section.ng-leave {
+    transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#index .section.ng-enter {
+    right: 100%;
+}
+
+#index .section.ng-enter.ng-enter-active {
+    right: 0;
+}
+
+#index .section.ng-leave.ng-leave-active {
+    right: -100%;
+    display: none;
+}
+
+/* Participants */
+.participants .media {
+    float: left;
+    width: 240px;
+    padding: 10px 10px 35px 10px;
+    margin: 0 10px 10px 0;
+    position: relative;
+    border: 1px solid #dfd7ca;
+    border-left-width: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.participants .glyphicon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    top: auto;
+}
+
+.participants .media img {
+    width: 64px;
+    height: 64px;
+}
+
+.participants .media .media-heading {
+    width: 140px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.participants .media .btn {
+    border-radius: 0;
+    width: 50%;
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+}
+
+.participants .media .btn.delete {
+    left: 50%;
+}
+
+/* Tournament */
+.tournament .panel-body {
+    overflow: hidden;
+    height: 550px;
+}
+
+.tournament .player {
+    min-width: 300px;
+}
+
+.tournament .player a.thumbnail {
+    background: #fff;
+    margin: 0;
+}
+
+.tournament .versus {
+    display: table;
+    height: 360px;
+    padding: 20px;
+}
+
+.tournament .versus h3 {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* Tree */
+.tree-wrapper {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0 5px 5px 5px;
+}
+
+.g_gracket {
+    width: 9999px;
+    background-color: #fff;
+    padding: 30px 0 5px;
+    line-height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.g_round {
+    float: left;
+    margin-right: 70px;
+}
+
+.g_gracket h3 {
+    min-width: 180px;
+    margin: 0;
+    padding: 10px 8px 8px;
+    font-size: 18px;
+    font-weight: normal;
+    color: #fff
+}
+
+.g_round_label {
+    top: -5px;
+    font-weight: normal;
+    color: #777;
+    text-align: center;
+    font-size: 18px;
+    width: 180px;
+    margin: 5px 0;
+}
+
+.g_round:last-child {
+    margin-right: 20px;
+}
+
+.g_team {
+    background: #444;
+    border-radius: 4px 4px 0 0;
+}
+
+.g_team:last-child {
+    background: #777;
+    border-radius: 0 0 4px 4px;
+}
+
+.g_winner .g_team {
+    background: none;
+    border-radius: 4px;
+}
+
+.g_winner {
+    background: #444;
+    border-radius: 4px;
+}
+
+.g_current {
+    cursor: pointer;
+    background: #900 !important;
+}
+
+.g_gracket .g_team h3 {
+    padding: 10px 30px;
+    text-shadow: 0 2px 1px #222222;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.g_game {
+    position: relative;
+    margin-bottom: 15px;
+}

@@ -1,0 +1,22 @@
+{% extends 'shared/base.html' %}
+
+{% load staticfiles %}
+
+{% block title_block %}Home{% endblock %}
+
+{% block header_block %}{% endblock %}
+
+{% block content_block %}
+
+    <div id="index">
+        <div class="actions">
+            <a class="btn btn-info btn-lg ver nxt" href="/tournament">Tournament</a>
+            <a class="btn btn-info btn-lg ver nxt" href="/participants">Participants</a>
+        </div>
+
+        <div class="section-container">
+            <div ng-view class="section"></div>
+        </div>
+    </div>
+
+{% endblock %}

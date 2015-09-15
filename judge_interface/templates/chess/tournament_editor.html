@@ -1,0 +1,20 @@
+<form name="{{ form.form_name }}" method="post" class="form" novalidate>
+    <div class="modal-header">
+        <h3 class="modal-title">Tournament details</h3>
+    </div>
+    <div class="modal-body">
+        <div class="well">
+            <fieldset>
+                {% csrf_token %}
+                {{ form.as_div }}
+            </fieldset>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="submit(request)"
+                ng-disabled="{{ form.form_name }}.$invalid">
+            Save
+        </button>
+        <button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>

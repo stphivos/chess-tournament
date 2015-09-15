@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+{% load assets %}
+
+<html ng-app="ChessApp">
+<head lang="en">
+    <base href="/">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title_block %}{% endblock %} - Chess Tournament</title>
+
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    {% assets "css_3rd" %}
+        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"/>
+    {% endassets %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme.sandstone.min.css' %}"/>
+    {% assets "css_custom" %}
+        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"/>
+    {% endassets %}
+    {% block style_block %}{% endblock %}
+</head>
+<body ng-controller="HomeController" data-ng-init="init()">
+
+{% include "shared/progress.html" %}
+
+<div id="page">
+    {% include "shared/menu.html" %}
+
+    <div id="outer-content">
+        {% block outer_content %}
+            <div class="panel">
+                <div id="title" class="middle container"><h3>{% block header_block %}{% endblock %}</h3></div>
+            </div>
+        {% endblock %}
+        <div id="content" class="middle">
+            {% if last_feedback %}
+                {% if last_feedback.is_error %}
+                    {{ last_feedback.message }}
+                {% else %}
+                    <div class="alert {{ last_feedback.css_class }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{ last_feedback.message }}
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% block content_block %}{% endblock %}
+        </div>
+    </div>
+    <footer id="footer">
+        <div class="middle">
+            <ul class="text-muted">
+                <li>© 2015 Chess Inc.</li>
+            </ul>
+        </div>
+    </footer>
+</div>
+
+{% include "shared/modal.html" %}
+
+{% assets "js_3rd" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+{% assets "js_custom" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+{% block script_block %}{% endblock %}
+
+</body>
+</html>

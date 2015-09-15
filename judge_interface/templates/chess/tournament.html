@@ -1,0 +1,103 @@
+<div class="panel panel-default tournament">
+    <div class="panel-heading">
+        <h3 class="panel-title">Tournament</h3>
+    </div>
+    <div class="panel-body">
+        {% verbatim %}
+        <button class="btn btn-primary btn-sm ver nxt" type="button" ng-click="add()"
+                ng-show="!game && (!tournament.start_date || tournament.end_date)">Create new tournament
+        </button>
+
+        <div ng-show="tournament.start_date">
+            <h3 class="ver fst">
+                Tournament #{{ tournament.id }}
+            </h3>
+
+            <div>
+                Rounds: <label>{{ tournament.rounds }}</label>
+            </div>
+            <div>
+                K factor: <label>{{ tournament.k_factor }}</label>
+            </div>
+            <div>
+                Started: <label>{{ tournament.start_date | date:'dd/MM/yyyy' }}</label>
+            </div>
+
+            <button class="btn btn-primary btn-sm ver prv" type="button" ng-click="selectParticipants()"
+                    ng-show="tournament.start_date && !tournament.tree">Select Participants
+            </button>
+
+            <hr class="ver prv nxt">
+        </div>
+
+        <div class="tree-wrapper" ng-show="!game">
+            <div class="tree"></div>
+        </div>
+
+        <div ng-show="game">
+            <div class="ver nxt">
+                <button class="btn btn-primary btn-sm" type="button" ng-click="endGame()"
+                        ng-show="!game.end_date" ng-disabled="game.p1_score == null || game.p2_score == null">End game
+                </button>
+                <button class="btn btn-warning btn-sm" type="button" ng-click="hideGame()">Back to tournament</button>
+            </div>
+
+            <div class="left player p1">
+                <div class="thumbnail">
+                    <a href="" class="thumbnail">
+                        <img ng-src="/static/images/avatars/{{ game.p1.avatar }}">
+                    </a>
+
+                    <div class="caption">
+                        <h3 class="ver fst">{{ game.p1.name }}</h3>
+
+                        <p>
+                            <label>ELO rating</label><br>
+                            <span class="label label-info">{{ game.p1.rating }}</span>
+                        </p>
+
+                        <p class="form-group ver lst">
+                            <label for="p1_score">Game score</label>
+                            <select class="form-control" id="p1_score" name="p1_score" ng-model="game.p1_score"
+                                    ng-change="updateP2score()" ng-disabled="game.end_date"
+                                    ng-options="key*1.0 as value for (key, value) in scores">
+                            </select>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="left versus">
+                <h3>
+                    <span class="label label-default">VS</span>
+                </h3>
+            </div>
+            <div class="left player p2">
+                <div class="thumbnail">
+                    <a href="" class="thumbnail">
+                        <img ng-src="/static/images/avatars/{{ game.p2.avatar }}">
+                    </a>
+
+                    <div class="caption">
+                        <h3 class="ver fst">{{ game.p2.name }}</h3>
+
+                        <p>
+                            <label>ELO rating</label><br>
+                            <span class="label label-info">{{ game.p2.rating }}</span>
+                        </p>
+
+                        <p class="form-group ver lst">
+                            <label for="p2_score">Game score</label>
+                            <select class="form-control" id="p2_score" name="p2_score" ng-model="game.p2_score"
+                                    ng-change="updateP1score()" ng-disabled="game.end_date"
+                                    ng-options="key*1.0 as value for (key, value) in scores">
+                            </select>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+        {% endverbatim %}
+    </div>
+</div>

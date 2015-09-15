@@ -1,0 +1,48 @@
+<div class="panel panel-default participants">
+    <div class="panel-heading">
+        <h3 class="panel-title">Participants</h3>
+    </div>
+    <div class="panel-body">
+        <button class="btn btn-primary btn-sm ver nxt" type="button" ng-click="start()"
+                ng-disabled="!(selected > 0 && selected % 4 == 0)"
+                ng-show="tournament && !tournament.tree">Start tournament
+        </button>
+        <button class="btn btn-default btn-sm ver nxt" type="button" ng-click="add()">Add participant</button>
+
+        <ul class="media-list ver lst">
+            {% verbatim %}
+            <li ng-repeat="participant in participants" ng-class="{selected: participant.selected}"
+                ng-mouseenter="participant.showActions = !participant.showActions"
+                ng-mouseleave="participant.showActions = !participant.showActions"
+                class="media" tooltip="Select member to participate in the tournament" tooltip-placement="top"
+                tooltip-trigger="mouseenter" tooltip-enable="tournament && !tournament.tree">
+
+                <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"
+                      ng-show="participant.selected"></span>
+
+                <div class="media-left" ng-click="select($index)">
+                    <a href="">
+                        <img class="media-object" ng-src="/static/images/avatars/{{ participant.avatar }}">
+                    </a>
+                </div>
+                <div class="media-body" ng-click="select($index)">
+                    <h4 class="media-heading">
+                        {{ participant.name }}
+                    </h4>
+                    {{ participant.rating }}
+                </div>
+                <div>
+                    <button class="btn btn-warning btn-xs edit" type="button" ng-click="edit($index)"
+                            ng-show="!participant.selected && participant.showActions">Edit
+                    </button>
+                    <button class="btn btn-danger btn-xs delete" type="button" ng-click="delete($index)"
+                            ng-show="!participant.selected && participant.showActions">Delete
+                    </button>
+                    <div class="clear"></div>
+                </div>
+            </li>
+            <li class="clear"></li>
+            {% endverbatim %}
+        </ul>
+    </div>
+</div>
