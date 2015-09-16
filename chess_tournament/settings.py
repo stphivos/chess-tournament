@@ -25,7 +25,7 @@ SECRET_KEY = 'vyb0d9kj84dc1yytw^jucp_$&g3fb@nenv(+v%e!ccz0cy8e%0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ASSETS_DEBUG = True
+ASSETS_DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1']
 INTERNAL_IPS = ('127.0.0.1', '10.0.2.2',)
@@ -58,6 +58,8 @@ INSTALLED_APPS = (
 
 BOWER_INSTALLED_APPS = (
     'angular#1.4.5',
+    'angular-ui-router#0.2.15',
+    'angular-cookies#1.4.5',
     'angular-route#1.4.5',
     'angular-resource#1.4.5',
     'angular-animate#1.4.5',

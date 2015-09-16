@@ -3,14 +3,32 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import FormView, TemplateView
-from judge_interface.forms import ParticipantForm, TournamentForm
+from judge_interface.application import ApplicationService
+from judge_interface.forms import ParticipantForm, TournamentForm, LoginForm
+from judge_interface.infrastructure import json_result, template_result
 from judge_interface.models import Participant, Game, Tournament
 from rest_framework import viewsets, generics, permissions
 from rest_framework.response import Response
-from judge_interface.serializers import ParticipantSerializer, TournamentSerializer, GameSerializer
+from judge_interface.serializers import UserSerializer, ParticipantSerializer, TournamentSerializer, GameSerializer
 
 
-class ViewBase(TemplateView):
+class ApiMixin(object):
+    __app_service = None
+
+    @property
+    def app_service(self):
+        if not self.__app_service:
+            self.__app_service = ApplicationService()
+        return self.__app_service
+
+
+class AuthenticationMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(AuthenticationMixin, self).dispatch(*args, **kwargs)
+
+
+class ViewBase(ApiMixin, TemplateView):
     @property
     def last_feedback(self):
         return self.request.session['last_feedback'] if 'last_feedback' in self.request.session else None
@@ -42,14 +60,18 @@ class FormViewBase(ViewBase, FormView):
         pass
 
 
-class AuthenticationMixin(object):
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(AuthenticationMixin, self).dispatch(*args, **kwargs)
-
-
 class HomeView(ViewBase):
     template_name = 'home/index.html'
+
+
+class LoginView(ApiMixin, generics.ListCreateAPIView):
+    @template_result
+    def get(self, request, *args, **kwargs):
+        return 'home/login.html' if request.is_ajax() else 'home/index.html', {'form': LoginForm()}
+
+    @json_result
+    def post(self, request, *args, **kwargs):
+        self.app_service.authenticate(request, request.POST['username'], request.POST['password'])
 
 
 class ParticipantsView(ViewBase):

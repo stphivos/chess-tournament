@@ -1,22 +1,20 @@
 from django_assets import Bundle, register
 
-css_3rd = Bundle(
+css = Bundle(
     'bootstrap/dist/css/bootstrap.css',
     'djangular/css/styles.css',
     'djangular/css/bootstrap3.css',
-    filters='cssmin',
-    output='packed/lib.css'
-)
-
-css_custom = Bundle(
+    'css/bootstrap-theme.sandstone.min.css',
     'css/app.css',
     filters='cssmin',
     output='packed/app.css'
 )
 
-js_3rd = Bundle(
+js = Bundle(
     'jquery/dist/jquery.js',
     'angular/angular.js',
+    'angular-cookies/angular-cookies.js',
+    'angular-ui-router/release/angular-ui-router.js',
     'angular-route/angular-route.js',
     'angular-resource/angular-resource.js',
     'angular-animate/angular-animate.js',
@@ -24,14 +22,9 @@ js_3rd = Bundle(
     'bootstrap/dist/js/bootstrap.js',
     'djangular/js/django-angular.js',
     'js/jquery.gracket.js',
-    filters='jsmin',
-    output='packed/lib.js'
-)
-
-js_custom = Bundle(
     'js/app.js',
     filters='jsmin',
     output='packed/app.js'
 )
 
-register({'js_3rd': js_3rd, 'js_custom': js_custom, 'css_3rd': css_3rd, 'css_custom': css_custom})
+register({'js': js, 'css': css})

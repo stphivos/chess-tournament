@@ -1,5 +1,5 @@
 # chess-tournament
-Chess tournament single-page application for judge and contestant progress, based on the swiss-system.
+Swiss-system chess tournament single-page app for creating contests and scoring participants
 
 ## Stack
 *   AngularJS 1.4
@@ -11,10 +11,10 @@ Chess tournament single-page application for judge and contestant progress, base
 ## Screenshots
 
 #### Add/register members for participation in tournament
-![Participants list](static/images/screenshots/participants.png)
+![Participant list](static/images/screenshots/participants.png)
 
 #### Score contestants during a game
-![Game](static/images/screenshots/game.png)
+![Game score](static/images/screenshots/game.png)
 
 #### Watch tournament progress and final results
-![Game](static/images/screenshots/tournament.png)
+![Tournament details](static/images/screenshots/tournament.png)

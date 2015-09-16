@@ -51,7 +51,7 @@ Array.prototype.clean = function (text) {
 };
 
 var home = null;
-var app = angular.module('ChessApp', ['ngRoute', 'ngAnimate', 'ngResource', 'ui.bootstrap', 'ng.django.forms']);
+var app = angular.module('ChessApp', ['ngRoute', 'ngAnimate', 'ngResource', 'ngCookies', 'ui.router', 'ui.bootstrap', 'ng.django.forms']);
 
 app.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -65,6 +65,10 @@ app.config(['$routeProvider', '$locationProvider', '$resourceProvider', '$modalP
             .when('/participants', {
                 templateUrl: 'participants',
                 controller: 'ParticipantController'
+            })
+            .when('/login', {
+                templateUrl: 'login',
+                controller: 'LoginController'
             })
             .otherwise({
                 templateUrl: 'tournament',
@@ -186,12 +190,84 @@ app.service('utils', function ($http, $modal) {
     }
 });
 
-app.controller('HomeController', function ($scope) {
+app.factory('Auth', function ($http, $cookies, $location) {
+    var service = {};
+    service.globals = globals;
+    service.setUser = setUser;
+    service.clearUser = clearUser;
+    service.isLoggedIn = isLoggedIn;
+    service.verifyLoggedIn = verifyLoggedIn;
+
+    var globals = null;
+
+    function setUser(credentials) {
+        clearUser();
+        var token = btoa(credentials.username + ':' + credentials.password);
+        globals = {
+            username: credentials.username,
+            token: token
+        };
+        home.user = credentials.username;
+        $cookies.put('auth', JSON.stringify(globals));
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + token;
+    }
+
+    function clearUser() {
+        globals = null;
+        home.user = '';
+        $cookies.remove('auth');
+        $http.defaults.headers.common.Authorization = null;
+    }
+
+    function isLoggedIn() {
+        if (!globals) {
+            var auth = $cookies.get('auth');
+            globals = auth ? JSON.parse(auth) : null;
+        }
+        if (globals && !$http.defaults.headers.common['Authorization']) {
+            home.user = globals.username;
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + globals.token;
+        }
+        return (globals) ? globals.username : false;
+    }
+
+    function verifyLoggedIn() {
+        var result = isLoggedIn();
+        if (!result) {
+            var current = $location.path();
+            $location.path('/login').search('next', current);
+        }
+        return result;
+    }
+
+    return service;
+});
+
+app.controller('HomeController', function ($scope, Auth) {
     home = $scope;
+    Auth.isLoggedIn();
+    $scope.logout = function () {
+        Auth.clearUser();
+    };
+});
+
+app.controller('LoginController', function ($scope, $location, utils, Auth) {
+    $scope.login = function (credentials) {
+        utils.httpPost('/login', credentials, true, function (result) {
+            if (!result || !result.error) {
+                Auth.setUser(credentials);
+                $location.path($location.search().next || '/');
+                $location.search('next', null);
+            }
+            else {
+                // Display auth error
+            }
+        });
+    };
 });
 
 app.factory('Tournament', function ($resource) {
-    return $resource('/api/tournament/:id', {id: '@id'}, {
+    return $resource('/api/tournament/:id/', {id: '@id'}, {
         update: {
             method: 'PUT'
         },
@@ -208,13 +284,14 @@ app.factory('Tournament', function ($resource) {
     });
 });
 
-app.controller('TournamentController', function ($scope, $location, $compile, utils, Tournament) {
+app.controller('TournamentController', function ($scope, $location, $compile, utils, Auth, Tournament) {
     $scope.scores = {
         0: '0',
         0.5: '0.5',
         1: '1'
     };
     $scope.add = function () {
+        if (!Auth.verifyLoggedIn()) return;
         $scope.request = new Tournament();
         utils.openModal($scope, '/tournament/edit', function () {
             utils.showProgress();
@@ -228,7 +305,7 @@ app.controller('TournamentController', function ($scope, $location, $compile, ut
     };
     $scope.load = function () {
         utils.showProgress();
-        $scope.tournament = Tournament.get({id: 'latest'}, function () {
+        $scope.tournament = home.tournament = Tournament.get({id: 'latest'}, function () {
             if ($scope.tournament.tree) {
                 $('.tree').html('').gracket({
                     canvasLineColor: '#777',
@@ -279,6 +356,7 @@ app.controller('TournamentController', function ($scope, $location, $compile, ut
         }
     };
     $scope.endGame = function () {
+        if (!Auth.verifyLoggedIn()) return;
         utils.showProgress();
         Tournament.gameEnd({id: $scope.game.id, p1: $scope.game.p1_score, p2: $scope.game.p2_score}, function () {
             $scope.hideGame();
@@ -292,24 +370,24 @@ app.controller('TournamentController', function ($scope, $location, $compile, ut
 });
 
 app.factory('Participant', function ($resource) {
-    return $resource('/api/participants/:id', {id: '@id'}, {
+    return $resource('/api/participants/:id/', {id: '@id'}, {
         update: {
             method: 'PUT'
         }
     });
 });
 
-app.controller('ParticipantController', function ($scope, $location, $http, utils, Participant, Tournament) {
+app.controller('ParticipantController', function ($scope, $location, $http, utils, Auth, Participant, Tournament) {
     $scope.load = function () {
         utils.showProgress();
         $scope.selected = 0;
         $scope.participants = Participant.query(function () {
-            $scope.tournament = Tournament.get({id: 'latest'}, function () {
-                utils.hideProgress();
-            });
+            $scope.tournament = home.tournament;
+            utils.hideProgress();
         });
     };
     $scope.add = function () {
+        if (!Auth.verifyLoggedIn()) return;
         $scope.request = new Participant();
         utils.openModal($scope, '/participant/edit', function () {
             utils.showProgress();
@@ -320,6 +398,7 @@ app.controller('ParticipantController', function ($scope, $location, $http, util
         });
     };
     $scope.edit = function (index) {
+        if (!Auth.verifyLoggedIn()) return;
         $scope.request = $scope.participants[index];
         utils.openModal($scope, '/participant/edit?id=' + $scope.request.id, function () {
             utils.showProgress();
@@ -329,6 +408,7 @@ app.controller('ParticipantController', function ($scope, $location, $http, util
         });
     };
     $scope.delete = function (index) {
+        if (!Auth.verifyLoggedIn()) return;
         $scope.item = $scope.participants[index];
 
         utils.showProgress();
@@ -338,10 +418,12 @@ app.controller('ParticipantController', function ($scope, $location, $http, util
         });
     };
     $scope.select = function (index) {
+        if (!Auth.verifyLoggedIn()) return;
         $scope.participants[index].selected = !$scope.participants[index].selected;
         $scope.selected += $scope.participants[index].selected ? 1 : -1;
     };
     $scope.start = function () {
+        if (!Auth.verifyLoggedIn()) return;
         var fields = {'ids': ''};
         fields.ids = $scope.participants.map(function (x) {
             return x.selected ? x.id : '';

@@ -9,6 +9,8 @@ router.register(r'tournament', views.TournamentViewSet, base_name='tournament')
 urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
 
+    url(r'^login', views.LoginView.as_view(), name='login'),
+
     url(r'^participant/edit', views.ParticipantEditView.as_view(), name='participant_edit'),
     url(r'^participants', views.ParticipantsView.as_view(), name='participants'),
 

@@ -1,0 +1,17 @@
+<div class="panel panel-default login">
+    <div class="panel-heading">
+        <h3 class="panel-title">Login to manage tournaments</h3>
+    </div>
+    <div class="panel-body">
+        <form name="{{ form.form_name }}" method="post" class="form" novalidate>
+            <fieldset>
+                {% csrf_token %}
+                {{ form.as_div }}
+            </fieldset>
+            <button type="button" class="btn btn-primary" ng-click="login(request)"
+                    ng-disabled="{{ form.form_name }}.$invalid">
+                Login
+            </button>
+        </form>
+    </div>
+</div>

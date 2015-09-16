@@ -1,7 +1,13 @@
-from drf_extra_fields.fields import Base64ImageField
+from django.contrib.auth.models import User
 from judge_interface.models import Participant, Game, Tournament
 from rest_framework import serializers
 from random import randint
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'password',)
 
 
 class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
