@@ -267,10 +267,13 @@ class Tournament(ModelBase, models.Model):
         for i in range(game_count if game_count * 2 == len(participants) else game_count + 1):
             p1 = top_half[i] if i < len(top_half) else None  # if odd number of players top half < bottom half
             p2 = bottom_half[i]
+
+            if not p1:
+                p1, p2 = p2, p1
             game = self.create_game([], no=i + 1, p1=p1, p2=p2)
 
             if not game.p1:
-                game.finish(0, 1)  # player 2 scores a point without playing - gets a BYE!
+                game.finish(1, 0)  # player 1 scores a point without playing - gets a BYE!
             else:
                 game.save()
 
