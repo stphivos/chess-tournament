@@ -58,11 +58,11 @@ class Game(ModelBase, models.Model):
     end_date = models.DateTimeField(null=True)
     tournament = models.ForeignKey('Tournament', related_name='games')
 
-    p1 = models.ForeignKey('Participant', related_name='games_1', null=True)
+    p1 = models.ForeignKey('Participant', related_name='games_1')
     p1_score = models.FloatField(null=True)
     p1_total_score = models.FloatField(null=True)
 
-    p2 = models.ForeignKey('Participant', related_name='games_2')
+    p2 = models.ForeignKey('Participant', related_name='games_2', null=True)
     p2_score = models.FloatField(null=True)
     p2_total_score = models.FloatField(null=True)
 
