@@ -108,7 +108,12 @@ class TournamentEditView(FormViewBase):
         return kwargs
 
 
-class TournamentStartView(AuthenticationMixin, FormViewBase):
+class TournamentStartView(generics.CreateAPIView):
+    """
+    API endpoint that allows tournaments to start.
+    """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         participants = list(map(int, request.POST['ids'].split(',')))
@@ -154,11 +159,12 @@ class GameFindView(generics.RetrieveAPIView):
             no=self.kwargs['no']).select_related('p1', 'p2').first()
 
 
-class GameEndView(AuthenticationMixin, generics.UpdateAPIView):
+class GameEndView(generics.UpdateAPIView):
     """
     API endpoint that allows games to be updated.
     """
     queryset = Game.objects.all().select_related('tournament')
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     lookup_field = 'id'
 
     @transaction.atomic
@@ -166,7 +172,10 @@ class GameEndView(AuthenticationMixin, generics.UpdateAPIView):
         game = self.get_object()
         game.finish(float(kwargs['p1']), float(kwargs['p2']))
 
-        if game.tournament.is_round_completed and game.tournament.has_more_rounds:
-            game.tournament.advance()
+        if game.tournament.is_round_completed:
+            if game.tournament.has_more_rounds:
+                game.tournament.advance()
+            else:
+                game.tournament.finish()
 
         return Response({})

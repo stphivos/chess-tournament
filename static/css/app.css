@@ -107,6 +107,14 @@ body {
     margin-top: 14px;
 }
 
+.hor.nxt {
+    margin-right: 14px;
+}
+
+.hor.prv {
+    margin-left: 14px;
+}
+
 .hor.lst {
     margin-right: 0;
 }
@@ -232,85 +240,8 @@ body {
     vertical-align: middle;
 }
 
-/* Tree */
-.tree-wrapper {
-    margin: 0;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 0 5px 5px 5px;
-}
-
-.g_gracket {
-    width: 9999px;
-    background-color: #fff;
-    padding: 30px 0 5px;
-    line-height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-.g_round {
-    float: left;
-    margin-right: 70px;
-}
-
-.g_gracket h3 {
-    min-width: 180px;
-    margin: 0;
-    padding: 10px 8px 8px;
-    font-size: 18px;
-    font-weight: normal;
-    color: #fff
-}
-
-.g_round_label {
-    top: -5px;
-    font-weight: normal;
-    color: #777;
-    text-align: center;
-    font-size: 18px;
-    width: 180px;
-    margin: 5px 0;
-}
-
-.g_round:last-child {
-    margin-right: 20px;
-}
-
-.g_team {
-    background: #444;
-    border-radius: 4px 4px 0 0;
-}
-
-.g_team:last-child {
-    background: #777;
-    border-radius: 0 0 4px 4px;
-}
-
-.g_winner .g_team {
-    background: none;
-    border-radius: 4px;
-}
-
-.g_winner {
-    background: #444;
-    border-radius: 4px;
-}
-
-.g_current {
-    cursor: pointer;
-    background: #900 !important;
-}
-
-.g_gracket .g_team h3 {
-    padding: 10px 30px;
-    text-shadow: 0 2px 1px #222222;
-    text-transform: uppercase;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.g_game {
-    position: relative;
-    margin-bottom: 15px;
+.tournament .leaderboard {
+    height: 190px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }

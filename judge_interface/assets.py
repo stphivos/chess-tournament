@@ -21,7 +21,6 @@ js = Bundle(
     'angular-bootstrap/ui-bootstrap-tpls.js',
     'bootstrap/dist/js/bootstrap.js',
     'djangular/js/django-angular.js',
-    'js/jquery.gracket.js',
     'js/app.js',
     filters='jsmin',
     output='packed/app.js'

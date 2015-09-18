@@ -1,0 +1,23 @@
+{% verbatim %}
+<div ng-show="tournament.start_date">
+    <h3 class="ver fst">
+        Tournament #{{ tournament.id }}
+    </h3>
+
+    <div>
+        Rounds: <label>{{ tournament.rounds }}</label>
+    </div>
+    <div>
+        K factor: <label>{{ tournament.k_factor }}</label>
+    </div>
+    <div>
+        Started: <label>{{ tournament.start_date | date:'dd/MM/yyyy' }}</label>
+    </div>
+
+    <button class="btn btn-primary btn-sm ver prv" type="button" ng-click="selectParticipants()"
+            ng-show="tournament && !tournament.current_round">Select Participants
+    </button>
+
+    <hr class="ver prv nxt">
+</div>
+{% endverbatim %}

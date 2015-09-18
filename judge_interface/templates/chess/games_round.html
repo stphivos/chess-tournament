@@ -1,0 +1,17 @@
+{% verbatim %}
+<div ng-show="tournament.current_round && !game" class="ver nxt">
+    <div ng-show="!tournament.winner">
+        <h4>Round #{{ tournament.current_round }}</h4>
+
+        <button type="button" class="btn btn-warning hor nxt" ng-repeat="g in tournament.games"
+                ng-click="showGame(g.round, g.no)">
+            {{ g.p1.name }} Vs {{ g.p2.name }}
+        </button>
+    </div>
+    <div ng-show="tournament.winner">
+        <h4>Winner</h4>
+        <h4><span class="label label-info">{{ tournament.winner.name }}</span></h4>
+    </div>
+    <hr class="ver prv nxt">
+</div>
+{% endverbatim %}

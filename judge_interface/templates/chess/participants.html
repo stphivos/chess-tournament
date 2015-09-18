@@ -4,8 +4,8 @@
     </div>
     <div class="panel-body">
         <button class="btn btn-primary btn-sm ver nxt" type="button" ng-click="start()"
-                ng-disabled="!(selected > 0 && selected % 4 == 0)"
-                ng-show="tournament.start_date && !tournament.tree">Start tournament
+                ng-disabled="selected < 2"
+                ng-show="tournament && !tournament.current_round">Start tournament
         </button>
         <button class="btn btn-default btn-sm ver nxt" type="button" ng-click="add()">Add participant</button>
 

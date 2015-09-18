@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from judge_interface.models import Participant, Game, Tournament
 from rest_framework import serializers
-from random import randint
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -11,9 +10,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
+    score = serializers.SerializerMethodField()
+    round = serializers.SerializerMethodField()
+
     class Meta:
         model = Participant
-        fields = ('id', 'name', 'rating', 'avatar',)
+        fields = ('id', 'name', 'rating', 'avatar', 'score', 'round',)
+
+    def get_score(self, participant):
+        return participant.score if hasattr(participant, 'score') else 0
+
+    def get_round(self, participant):
+        return participant.round if hasattr(participant, 'round') else 0
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,57 +30,48 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Game
-        fields = ('id', 'start_date', 'end_date', 'p1', 'p1_score', 'p2', 'p2_score',)
+        fields = ('id', 'round', 'no', 'start_date', 'end_date', 'p1', 'p1_score', 'p2', 'p2_score',)
 
 
 class TournamentSerializer(serializers.HyperlinkedModelSerializer):
-    tree = serializers.SerializerMethodField()
+    __games = None
+
+    players = serializers.SerializerMethodField()
+    games = serializers.SerializerMethodField()
+    winner = ParticipantSerializer(read_only=True)
 
     class Meta:
         model = Tournament
-        fields = ('id', 'start_date', 'end_date', 'rounds', 'k_factor', 'tree',)
+        fields = ('id', 'start_date', 'end_date', 'rounds', 'current_round', 'k_factor', 'players', 'games', 'winner',)
 
-    def get_empty(self):
-        p = Participant()
-        p.id = randint(1000000, 10000000)
-        return p
+    def get_players(self, tournament):
+        players = []
 
-    def get_json(self, participant):
-        return {
-            'name': participant.name if participant.name else '',
-            'id': participant.id,
-            'seed': participant.id if participant.name else ''
-        }
+        if not self.__games:
+            self.__games = list(tournament.games.order_by('-round', 'no').all().select_related('p1', 'p2'))
 
-    def get_tree(self, tournament):
-        data = []
-        participant_count = tournament.participants.count()
-        game_count = participant_count / 2
-        all_games = list(tournament.games.order_by('no').all().select_related('p1', 'p2'))
+        def update_players(game, player, score):
+            if player not in players:
+                player.score = score
+                player.round = game.round
+                player.opponents = player.get_opponents_total(self.__games)
+                players.append(player)
+                return True
+            return False
 
-        for r in range(1, tournament.rounds + 1):
-            # games = tournament.games.order_by('no').filter(round=r).all()
-            games = [x for x in all_games if x.round == r]
-            pairs = []
+        for g in [x for x in self.__games if x.end_date]:
+            if g.p1:
+                update_players(g, g.p1, g.p1_total_score)
+            if g.p2:
+                update_players(g, g.p2, g.p2_total_score)
 
-            for i in range(game_count):
-                matches = [x for x in games if x.no == i + 1]
-                p1 = matches[0].p1 if len(matches) > 0 else self.get_empty()
-                p2 = matches[0].p2 if len(matches) > 0 else self.get_empty()
-                pairs.append([self.get_json(p1), self.get_json(p2)])
+        values = sorted(players, key=lambda x: (x.score, x.opponents), reverse=True)
+        return ParticipantSerializer(instance=values, many=True).data
 
-            if game_count == 0:
-                # final = tournament.games.filter(round=tournament.rounds - 1).first()
-                final = [x for x in all_games if x.round == tournament.rounds - 1]
-                if len(final) > 0 and final[0].end_date:
-                    pairs.append([self.get_json(final[0].winner)])
+    def get_games(self, tournament):
+        if not self.__games:
+            self.__games = list(tournament.games.order_by('-round', 'no').all().select_related('p1', 'p2'))
 
-            if participant_count > 0 and len(pairs) == 0:
-                pairs.append([self.get_json(self.get_empty())])
+        games = [x for x in self.__games if x.p1 and x.p2 and x.round == tournament.current_round]
 
-            if len(pairs) > 0:
-                data.append(pairs)
-
-            game_count /= 2
-
-        return data if len(data) > 0 else None
+        return GameSerializer(instance=games, many=True).data

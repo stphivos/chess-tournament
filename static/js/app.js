@@ -306,14 +306,6 @@ app.controller('TournamentController', function ($scope, $location, $compile, ut
     $scope.load = function () {
         utils.showProgress();
         $scope.tournament = home.tournament = Tournament.get({id: 'latest'}, function () {
-            if ($scope.tournament.tree) {
-                $('.tree').html('').gracket({
-                    canvasLineColor: '#777',
-                    scope: $scope,
-                    compileService: $compile,
-                    src: $scope.tournament.tree
-                });
-            }
             utils.hideProgress();
         });
     };
