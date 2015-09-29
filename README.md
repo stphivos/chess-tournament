@@ -1,5 +1,5 @@
 # chess-tournament
-Swiss-system chess tournament single-page app for creating contests and scoring participants
+Swiss-system chess tournament SPA for judges to create contests and score participants
 
 ## Stack
 *   AngularJS 1.4
